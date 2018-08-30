@@ -1,13 +1,14 @@
 FROM amazonlinux:latest
 
-# Enable user creation
+# Enable user creation and helper packages
 RUN yum install -y shadow-utils tar gzip
 RUN adduser -ms /bin/bash nodejs
 
-# Installing AWS CLI
+# Installing AWS CLI and AWS EB CLI
 RUN curl -O -s https://bootstrap.pypa.io/get-pip.py \
   && python get-pip.py \
-  && pip install awscli
+  && pip install awscli \
+  && pip install awsebcli
 
 # Install node with nodejs user
 USER nodejs
@@ -29,5 +30,11 @@ RUN source $NVM_DIR/nvm.sh \
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-# Confirm installation
+# Confirm Node.js installation
 RUN node -v && npm -v
+
+# Installing yarn
+RUN npm install --global yarn
+
+# Confirm yarn installation
+RUN yarn --version
